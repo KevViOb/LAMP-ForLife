@@ -1,0 +1,30 @@
+# Dependencias y caché
+vendor/
+.composer/
+
+# Variables de entorno y configuración local
+.env
+.env.local
+*.local.php
+
+# Caché de OPcache y sesiones PHP
+/tmp/
+/sessions/
+
+# Logs de la aplicación
+*.log
+/logs/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos de configuración del servidor
+.htaccess.local
