@@ -80,6 +80,12 @@ mysql -u root -p < forlife/config/schema.sql
 nano /var/www/html/forlife/config/Conexion.php
 ```
 
+El esquema no crea ningún administrador. Registre su usuario desde la página de registro y luego asígnele el rol desde MySQL:
+
+```sql
+UPDATE forlife_db.usuarios SET rol = 'admin' WHERE usuario = 'su_usuario';
+```
+
 Acceder desde el navegador a `https://<ip-del-servidor>/forlife/`
 
 ---

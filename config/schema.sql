@@ -48,16 +48,9 @@ CREATE TABLE IF NOT EXISTS logs_acceso (
 CREATE INDEX idx_fecha_intento ON logs_acceso (fecha_intento);
 
 -- Usuario administrador inicial del sistema
--- Contraseña: Admin2025# (se debe cambiar en producción)
-INSERT INTO usuarios (usuario, nombre, apellido1, apellido2, password_hash, rol)
-VALUES (
-    'admin',
-    'Administrador',
-    'For Life',
-    'SA',
-    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-    'admin'
-);
+-- No se incluye un admin con contraseña por defecto porque este script es
+-- público. Registre su usuario desde vista/registro.php y luego promuévalo:
+-- UPDATE usuarios SET rol = 'admin' WHERE usuario = 'su_usuario';
 
 -- Usuario de aplicación con permisos limitados
 -- Ejecutar estos comandos dentro de MySQL como root

@@ -18,13 +18,23 @@ $controlador = new AuthControlador();
 $mensaje     = '';
 $tipoMensaje = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'], $_POST['id'])) {
-    $id     = (int) $_POST['id'];
-    $estado = $_POST['accion'] === 'activar' ? 1 : 0;
-    $exito  = $controlador->cambiarEstadoUsuario($id, $estado);
+// Token CSRF para que otro sitio no pueda enviar acciones en nombre del admin
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
-    $mensaje     = $exito ? 'Estado actualizado correctamente.' : 'No se pudo actualizar el estado.';
-    $tipoMensaje = $exito ? 'exito' : 'error';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'], $_POST['id'])) {
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'] ?? '')) {
+        $mensaje     = 'Solicitud inválida. Recargue la página e intente de nuevo.';
+        $tipoMensaje = 'error';
+    } else {
+        $id     = (int) $_POST['id'];
+        $estado = $_POST['accion'] === 'activar' ? 1 : 0;
+        $exito  = $controlador->cambiarEstadoUsuario($id, $estado);
+
+        $mensaje     = $exito ? 'Estado actualizado correctamente.' : 'No se pudo actualizar el estado.';
+        $tipoMensaje = $exito ? 'exito' : 'error';
+    }
 }
 
 $usuarios = $controlador->obtenerUsuarios();
@@ -152,6 +162,7 @@ $navNombre  = htmlspecialchars($_SESSION['nombre']);
                                     <?php if ($u['rol'] !== 'admin'): ?>
                                         <form method="POST" action="" style="display:inline;">
                                             <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                             <input type="hidden" name="accion" value="<?= $u['activo'] ? 'desactivar' : 'activar' ?>">
                                             <button
                                                 type="submit"
